@@ -1,0 +1,28 @@
+module simpl
+
+imports
+  Common
+
+context-free start-symbols
+  Exps
+
+context-free syntax
+  
+  Exps.Lit   = <<INT>>
+  Exps.Plus  = <<Exps> + <Exps>> {left}
+  Exps.Minus = <<Exps> - <Exps>> {left}
+  Exps.Times = <<Exps> * <Exps>> {left}
+  
+  Exps = <(<Exps>)> {bracket}
+  
+context-free priorities
+
+  {left:
+    Exps.Times
+  } >
+  {left:
+    Exps.Plus
+    Exps.Minus
+  }
+
+
