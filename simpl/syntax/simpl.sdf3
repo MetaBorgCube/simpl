@@ -4,25 +4,25 @@ imports
   Common
 
 context-free start-symbols
-  Exps
+  Exp
 
 context-free syntax
   
-  Exps.Lit   = <<INT>>
-  Exps.Plus  = <<Exps> + <Exps>> {left}
-  Exps.Minus = <<Exps> - <Exps>> {left}
-  Exps.Times = <<Exps> * <Exps>> {left}
+  Exp.Lit   = <<INT>>
+  Exp.Plus  = <<Exp> + <Exp>> {left}
+  Exp.Minus = <<Exp> - <Exp>> {left}
+  Exp.Times = <<Exp> * <Exp>> {left}
   
-  Exps = <(<Exps>)> {bracket}
+  Exp = <(<Exp>)> {bracket}
   
 context-free priorities
 
   {left:
-    Exps.Times
+    Exp.Times
   } >
   {left:
-    Exps.Plus
-    Exps.Minus
+    Exp.Plus
+    Exp.Minus
   }
 
 
