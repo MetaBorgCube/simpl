@@ -1,0 +1,68 @@
+module trans/simpl
+
+imports
+  src-gen/ds-signatures/simpl-sig
+
+signature
+  sorts
+    V
+  
+  constructors
+    NumV: Int -> V
+
+  arrows
+    Exp --> V
+  
+  variables
+    v : V
+
+  native operators
+    parseI: String -> Int
+    addI: Int * Int -> Int
+    subI: Int * Int -> Int
+    mulI: Int * Int -> Int
+    
+rules
+  
+  Lit(s) --> NumV(parseI(s)).
+  
+  Plus(NumV(i1), NumV(i2)) --> NumV(addI(i1, i2)).
+  
+  Minus(NumV(i1), NumV(i2)) --> NumV(subI(i1, i2)).
+  
+  Times(NumV(i1), NumV(i2)) --> NumV(mulI(i1, i2)).
+
+signature
+  sort aliases
+    Env = Map<String,V>
+  
+rules
+  Env e |- Let(x, e1, e2) --> v2
+  where
+    Env e |- e1 --> v1;
+    Env {x |--> v1} |- e2 --> v2.
+  
+  Env e |- Var(x) --> e[x].
+
+signature
+  sort aliases
+    Heap = Map<Int, V>
+  
+  constructors
+    BoxV: Int -> V
+
+rules
+
+  Box(e) :: Heap h --> BoxV(addr) :: Heap {addr |--> v, h'}
+  where
+    e :: Heap h --> v :: Heap h';
+    fresh => addr.
+  
+  Unbox(e) :: Heap h --> h'[addr] :: Heap h'
+  where
+    e :: Heap h --> BoxV(addr) :: Heap h'.
+  
+  Setbox(box, e) :: Heap h --> v :: Heap {addr |--> v, h''}
+  where
+    box :: Heap h --> BoxV(addr) :: Heap h';
+    e :: Heap h' --> v :: Heap h''.

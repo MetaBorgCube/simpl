@@ -12,9 +12,21 @@ context-free syntax
   Exp.Plus  = <<Exp> + <Exp>> {left}
   Exp.Minus = <<Exp> - <Exp>> {left}
   Exp.Times = <<Exp> * <Exp>> {left}
-  
+
   Exp = <(<Exp>)> {bracket}
   
+context-free syntax
+
+  Exp.Let = <let <ID> = <Exp> in <Exp>> {non-assoc}
+    
+  Exp.Var = <<ID>> 
+
+context-free syntax
+
+  Exp.Box = <box(<Exp>)>
+  Exp.Unbox = <unbox(<Exp>)>
+  Exp.Setbox = <setbox(<Exp>, <Exp>)>
+    
 context-free priorities
 
   {left:
@@ -23,6 +35,9 @@ context-free priorities
   {left:
     Exp.Plus
     Exp.Minus
+  } >
+  {non-assoc:
+    Exp.Let
   }
 
 
