@@ -35,34 +35,38 @@ rules
 signature
   sort aliases
     Env = Map<String,V>
-  
+  variables
+    E : Env
+
 rules
-  Env e |- Let(x, e1, e2) --> v2
+  E |- Let(x, v1, e2) --> v2
   where
-    Env e |- e1 --> v1;
-    Env {x |--> v1, e} |- e2 --> v2.
+    Env {x |--> v1, E} |- e2 --> v2.
   
-  Env e |- Var(x) --> e[x].
+  E |- Var(x) --> E[x].
 
 signature
   sort aliases
     Heap = Map<Int, V>
+  
+  variables
+    H : Heap
   
   constructors
     BoxV: Int -> V
 
 rules
 
-  Box(e) :: Heap h --> BoxV(addr) :: Heap {addr |--> v, h'}
+  Box(e) :: H --> BoxV(addr) :: Heap {addr |--> v, H'}
   where
-    e :: Heap h --> v :: Heap h';
+    e :: H --> v :: H';
     fresh => addr.
   
-  Unbox(e) :: Heap h --> h'[addr] :: Heap h'
+  Unbox(e) :: H --> H'[addr] :: H'
   where
-    e :: Heap h --> BoxV(addr) :: Heap h'.
+    e :: H --> BoxV(addr) :: H'.
   
-  Setbox(box, e) :: Heap h --> v :: Heap {addr |--> v, h''}
+  Setbox(box, e) :: H --> v :: Heap {addr |--> v, H''}
   where
-    box :: Heap h --> BoxV(addr) :: Heap h';
-    e :: Heap h' --> v :: Heap h''.
+    box :: H --> BoxV(addr) :: H';
+    e :: H' --> v :: H''.
