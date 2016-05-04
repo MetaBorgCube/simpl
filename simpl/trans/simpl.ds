@@ -40,7 +40,7 @@ rules
   Env e |- Let(x, e1, e2) --> v2
   where
     Env e |- e1 --> v1;
-    Env {x |--> v1} |- e2 --> v2.
+    Env {x |--> v1, e} |- e2 --> v2.
   
   Env e |- Var(x) --> e[x].
 
