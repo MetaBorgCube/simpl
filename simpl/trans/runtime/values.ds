@@ -1,0 +1,8 @@
+module trans/runtime/values
+
+signature
+  sorts
+    V
+  
+  variables
+    v : V

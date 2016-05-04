@@ -1,0 +1,27 @@
+module trans/runtime/store
+
+imports
+  trans/runtime/values
+
+signature
+  sort aliases
+    Heap = Map<Int, V>
+  
+  variables
+    H : Heap
+  
+  constructors
+    read: Int --> V
+    allocate: V --> Int
+    write: Int * V --> V
+
+rules
+
+  read(addr) :: H --> H[addr].
+
+  allocate(v) --> addr
+  where
+    fresh => addr;
+    write(addr, v) --> _.
+  
+  write(addr, v) :: H --> v :: Heap {addr |--> v, H}.

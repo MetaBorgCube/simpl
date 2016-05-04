@@ -2,20 +2,15 @@ module trans/simpl
 
 imports
   src-gen/ds-signatures/simpl-sig
-
-signature
-  sorts
-    V
+  trans/runtime/runtime
   
+signature
   constructors
     NumV: Int -> V
 
   arrows
     Exp --> V
   
-  variables
-    v : V
-
   native operators
     parseI: String -> Int
     addI: Int * Int -> Int
@@ -32,41 +27,22 @@ rules
   
   Times(NumV(i1), NumV(i2)) --> NumV(mulI(i1, i2)).
 
-signature
-  sort aliases
-    Env = Map<String,V>
-  variables
-    E : Env
 
 rules
-  E |- Let(x, v1, e2) --> v2
+  Let(x, v1, e2) --> v2
   where
-    Env {x |--> v1, E} |- e2 --> v2.
+    Env bindVar(x, v1) |- e2 --> v2.
   
-  E |- Var(x) --> E[x].
+  Var(x) --> readVar(x).
 
 signature
-  sort aliases
-    Heap = Map<Int, V>
-  
-  variables
-    H : Heap
-  
   constructors
     BoxV: Int -> V
 
 rules
 
-  Box(e) :: H --> BoxV(addr) :: Heap {addr |--> v, H'}
-  where
-    e :: H --> v :: H';
-    fresh => addr.
+  Box(v) --> BoxV(allocate(v)).
   
-  Unbox(e) :: H --> H'[addr] :: H'
-  where
-    e :: H --> BoxV(addr) :: H'.
+  Unbox(BoxV(addr)) --> read(addr).
   
-  Setbox(box, e) :: H --> v :: Heap {addr |--> v, H''}
-  where
-    box :: H --> BoxV(addr) :: H';
-    e :: H' --> v :: H''.
+  Setbox(BoxV(addr), v) --> write(addr,v).
