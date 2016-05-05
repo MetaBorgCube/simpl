@@ -26,9 +26,17 @@ context-free syntax
   Exp.Box = <box(<Exp>)>
   Exp.Unbox = <unbox(<Exp>)>
   Exp.Setbox = <setbox(<Exp>, <Exp>)>
-    
+
+context-free syntax
+
+  Exp.Fun = [[ID] -> [Exp]] {right}
+  Exp.App = <<Exp>(<Exp>)> {left}
+
 context-free priorities
 
+  {left:
+    Exp.App
+  } >
   {left:
     Exp.Times
   } >
@@ -36,8 +44,12 @@ context-free priorities
     Exp.Plus
     Exp.Minus
   } >
+  {right:
+    Exp.Fun
+  } >
   {non-assoc:
     Exp.Let
   }
+  
 
 
