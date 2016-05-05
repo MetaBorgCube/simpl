@@ -40,9 +40,24 @@ signature
     BoxV: Int -> V
 
 rules
-
   Box(v) --> BoxV(allocate(v)).
   
   Unbox(BoxV(addr)) --> read(addr).
   
   Setbox(BoxV(addr), v) --> write(addr,v).
+
+signature
+  constructors
+    ClosV: String * Exp * Env -> V
+
+rules
+  E |- Fun(x, e) --> ClosV(x, e, E).
+  
+  App(ClosV(x, e, E), v1) --> v2
+  where
+    E  |- bindVar(x, v1) --> E';
+    E' |- e --> v2.
+
+
+
+
