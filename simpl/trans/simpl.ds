@@ -10,12 +10,22 @@ signature
 
   arrows
     Exp --> V
-  
+
   native operators
     parseI: String -> Int
     addI: Int * Int -> Int
     subI: Int * Int -> Int
     mulI: Int * Int -> Int
+
+signature
+  arrows 
+    Prog -init-> V
+
+rules
+  
+  Program(e) -init-> v
+  where
+    Env {} |- e :: Heap {} --> v :: Heap _.
     
 rules
   

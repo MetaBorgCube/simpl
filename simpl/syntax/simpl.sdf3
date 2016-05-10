@@ -4,7 +4,10 @@ imports
   Common
 
 context-free start-symbols
-  Exp
+  Prog
+
+context-free syntax
+  Prog.Program = Exp
 
 context-free syntax
   
