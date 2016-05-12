@@ -32,7 +32,7 @@ context-free syntax
 
 context-free syntax
 
-  Exp.Fun = [[ID] -> [Exp]] {right}
+  Exp.Fun = [[ID] -> [Exp]]
   Exp.App = <<Exp>(<Exp>)> {left}
 
 context-free priorities
@@ -47,9 +47,8 @@ context-free priorities
     Exp.Plus
     Exp.Minus
   } >
-  {right:
     Exp.Fun
-  } >
+  >
   {non-assoc:
     Exp.Let
   }
