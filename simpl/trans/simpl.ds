@@ -70,9 +70,8 @@ rules
 
 rules
   
-  Ifz(ec, e1, e2) --> v
+  Ifz(NumV(ci), e1, e2) --> v
   where
-    ec --> NumV(ci);
     case ci of {
       0 =>
         e1 --> v
