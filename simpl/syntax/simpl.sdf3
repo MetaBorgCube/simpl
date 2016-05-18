@@ -35,6 +35,9 @@ context-free syntax
   Exp.Fun = [[ID] -> [Exp]]
   Exp.App = <<Exp>(<Exp>)> {left}
 
+context-free syntax
+  Exp.Ifz = <ifz <Exp> then <Exp> else <Exp>>
+
 context-free priorities
 
   {left:

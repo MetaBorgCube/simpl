@@ -68,6 +68,16 @@ rules
     E  |- bindVar(x, v1) --> E';
     E' |- e --> v2.
 
-
+rules
+  
+  Ifz(ec, e1, e2) --> v
+  where
+    ec --> NumV(ci);
+    case ci of {
+      0 =>
+        e1 --> v
+      otherwise =>
+        e2 --> v
+    }.
 
 
