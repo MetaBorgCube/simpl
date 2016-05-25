@@ -5,7 +5,7 @@ imports
 
 signature
   sort aliases
-    Env = Map<String, V>
+    Env = Map(String, V)
   
   variables
     E : Env

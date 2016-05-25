@@ -5,7 +5,7 @@ imports
 
 signature
   sort aliases
-    Heap = Map<Int, V>
+    Heap = Map(Int, V)
   
   variables
     H : Heap
