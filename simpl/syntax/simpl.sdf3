@@ -38,8 +38,14 @@ context-free syntax
 context-free syntax
   Exp.Ifz = <ifz <Exp> then <Exp> else <Exp>>
 
+context-free syntax
+      
+  Exp.Block = <{ <{Exp ";"}*> }>
+
 context-free priorities
 
+  Exp.Block
+  >
   {left:
     Exp.App
   } >

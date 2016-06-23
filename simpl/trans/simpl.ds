@@ -10,6 +10,7 @@ signature
 
   arrows
     Exp --> V
+    List(Exp) --> V
 
   native operators
     parseI: String -> Int
@@ -79,4 +80,19 @@ rules
         e2 --> v
     }.
 
+rules
+  
+  Block(es) --> v
+  where
+    es --> v.
+  
+  es : List(Exp) --> v
+  where
+    case es of {
+      [e] =>
+        e --> v
+      [e|es'] =>
+        e --> _;
+        es' --> v
+    }.
 
