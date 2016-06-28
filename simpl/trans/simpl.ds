@@ -8,9 +8,7 @@ signature
   constructors
     NumV: Int -> V
     StringV: String -> V
-    NFAV : NFA -> V
-    EClosV : List(State) -> V
-
+    
   arrows
     Exp --> V
     List(Exp) --> V
