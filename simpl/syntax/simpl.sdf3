@@ -45,7 +45,9 @@ context-free syntax
 context-free syntax
   
   Exp.String = <<STRING>>
-  Exp.Match = <<Exp> ? [<Regex>]>
+  Exp.Match = <<Exp> ? <Exp>>
+  
+  Exp.ExpRegex = <[<Regex>]>
   
   Regex.Epsilon = EPSI
   Regex.Char = <<CHAR>>
@@ -76,7 +78,6 @@ context-free priorities
     Exp.Let
   }
   > Regex.Kleene > Regex.Seq
-  // > Regex.Group > Regex.Alt > Regex.Seq
   
 
 

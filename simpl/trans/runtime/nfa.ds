@@ -23,9 +23,9 @@ signature
     nfa-start : NFA --> State
     nfa-final : NFA --> State
 
-    nfa-new : State * State --> NFA
-    nfa-add-state : NFA * State --> NFA
-    nfa-add-move : NFA * State * String * State --> NFA
+//    nfa-new : State * State --> NFA
+//    nfa-add-state : NFA * State --> NFA
+//    nfa-add-move : NFA * State * String * List(State) --> NFA
     
     nfa-move    : NFA * TransInput --> List(State)
     nfa-move-aux: NFA * TransInput --> List(State)

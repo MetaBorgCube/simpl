@@ -8,6 +8,7 @@ signature
   constructors
     NumV: Int -> V
     StringV: String -> V
+    RegexV: NFA -> V
     
   arrows
     Exp --> V
@@ -106,13 +107,14 @@ rules
 
 rules
   
+  ExpRegex(regex) --> RegexV(regex).
+  
   String(s) --> StringV(unquoteS(s)).
   
   Plus(StringV(s1), StringV(s2)) --> StringV(concatS(s1, s2)).
   
-  Match(v@StringV(s), regex) --> v 
+  Match(v@StringV(s), RegexV(nfa)) --> v 
   where
-    regex --> nfa;
     nfa-simulate(nfa, explodeS(s)) --> true.
 
 /*
