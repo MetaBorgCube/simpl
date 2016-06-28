@@ -114,7 +114,7 @@ rules
   
   Match(StringV(s), regex) --> NumV(i)
   where
-    regex --> nfa@NFA(ss, _, _, _);
+    regex --> nfa;
     nfa-run(explodeS(s), nfa) --> boolv;
     case boolv of {
       true =>
@@ -276,6 +276,12 @@ signature
     
     nfa-moves : List(State) * String * NFA --> List(State)  
     
+  native operators
+    printSS: List(State) -> List(State)
+    printCS: List(String) -> List(String)
+    printNFA: NFA -> NFA
+    print: String -> String
+    
 rules
   
   nfa-run(strs, nfa) --> nfa-run-aux(strs, e-closure([nfa-start(nfa)], nfa), nfa).
@@ -286,8 +292,11 @@ rules
   where
     e-closure(nfa-moves(ss, c, nfa), nfa) --> ss'.
 
-//  nfa-moves([], _, nfa) --> [].
-//  
-//  nfa-moves([
+  nfa-moves([], _, _) --> [].
+  
+  nfa-moves([s|ss], c, nfa) --> concat(ss1, ss2)
+  where
+    nfa-move(I(s, c), nfa) --> ss1;
+    nfa-moves(ss, c, nfa) --> ss2.
   
   

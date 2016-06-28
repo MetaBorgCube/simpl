@@ -21,8 +21,7 @@ public abstract class concat_2 extends TermBuild {
 		return left.addAll(right.take(right.size()));
 	}
 
-	public static TermBuild create(SourceSection source, TermBuild left,
-			TermBuild right) {
+	public static TermBuild create(SourceSection source, TermBuild left, TermBuild right) {
 		return concat_2NodeGen.create(source, left, right);
 	}
 

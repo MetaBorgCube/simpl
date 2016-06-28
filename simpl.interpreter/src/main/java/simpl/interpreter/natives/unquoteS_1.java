@@ -15,7 +15,7 @@ public abstract class unquoteS_1 extends TermBuild {
 	}
 
 	@Specialization
-	public String doInt(String s) {
+	public String doIt(String s) {
 		return unquote(s);
 	}
 
