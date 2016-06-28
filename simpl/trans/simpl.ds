@@ -7,21 +7,31 @@ imports
 signature
   constructors
     NumV: Int -> V
+    StringV: String -> V
+    NFAV : NFA -> V
+    EClosV : List(State) -> V
 
   arrows
     Exp --> V
     List(Exp) --> V
-
+    
   native operators
     parseI: String -> Int
     addI: Int * Int -> Int
     subI: Int * Int -> Int
     mulI: Int * Int -> Int
-
+    concatS: String * String -> String
+    unquoteS: String -> String
+    explodeS: String -> List(String)
+  
+  sort aliases
+    SS = List(String)
+    
 signature
   arrows 
     Prog -init-> V
-
+    Prog -inter-> V
+    
 rules
   
   Program(e) -init-> v
@@ -96,3 +106,188 @@ rules
         es' --> v
     }.
 
+rules
+  
+  String(s) --> StringV(unquoteS(s)).
+  
+  Plus(StringV(s1), StringV(s2)) --> StringV(concatS(s1, s2)).
+  
+  Match(StringV(s), regex) --> NumV(i)
+  where
+    regex --> nfa@NFA(ss, _, _, _);
+    nfa-run(explodeS(s), nfa) --> boolv;
+    case boolv of {
+      true =>
+        0 => i
+      false =>
+        1 => i
+    }.
+
+/*
+* ============
+* REGEX to NFA
+* ============
+*/
+
+signature
+  sorts
+    NFA
+    Tinput
+    
+  sort aliases
+    State = Int // just an ID
+    TTable = Map(Tinput, List(Int)) // transition table
+    
+  constructors
+    // states * start state * accepting state * transition table
+    NFA : List(State) * State * State * TTable -> NFA
+    I : State * String -> Tinput
+    
+    nfa-table : NFA --> TTable
+    nfa-states: NFA --> List(State)
+    nfa-start: NFA --> State
+    nfa-final: NFA --> State
+    nfa-move : Tinput * NFA --> List(State)
+    
+  arrows
+    Regex --> NFA
+
+  native operators
+    concat : List(State) * List(State) -> List(State)
+
+rules
+
+  Epsilon(_) --> NFA([i, f], i, f, { I(i,"") |--> [f] })
+  where
+    fresh => i;
+    fresh => f.
+
+  Char(c) --> NFA([i, f], i, f, { I(i, c) |--> [f] })
+  where
+    fresh => i;
+    fresh => f.
+
+  Alt(r1, r2) --> NFA([i, f | ss], i, f, { I(i,"") |--> [i1, i2],
+                                           I(f1,"") |--> [f],
+                                           I(f2,"") |--> [f],
+                                           t1, t2
+                                         })
+  where
+    fresh => i;
+    fresh => f;
+    r1 --> NFA(ss1, i1, f1, t1);
+    r2 --> NFA(ss2, i2, f2, t2);
+    concat(ss1, ss2) => ss.
+
+  Seq(r1, r2) --> NFA(ss, i1, f2, { I(f1, "") |--> [i2],  
+                                    t1, t2
+                                  })
+  where
+    r1 --> NFA(ss1, i1, f1, t1);
+    r2 --> NFA(ss2, i2, f2, t2);
+    concat(ss1, ss2) => ss.
+
+  Kleene(r) --> NFA([i, f | ss1], i, f, { I(i,"") |--> [i1, f],
+                                          I(f1,"") |--> [i1, f],
+                                          t1
+                                        })
+  where
+    fresh => i;
+    fresh => f;
+    r --> NFA(ss1, i1, f1, t1).
+
+  Group(r) --> r.
+
+/*
+* ============
+* NFA simulation
+* ============
+*/
+
+signature
+  sorts StatesPair
+  constructors SP: List(State) * List(State) -> StatesPair
+  
+  constructors
+    e-closure: List(State) * NFA --> List(State)
+    e-closure-aux: List(State) * List(State) * NFA --> List(State)
+    e-closure-help: List(State) * List(State) * List(State) --> StatesPair
+    is-in-states: State * List(State) --> Bool
+    nfa-move-aux: Tinput * NFA --> List(State)
+  
+rules
+  
+  e-closure(ss, nfa) --> e-closure-aux(ss, ss, nfa).
+
+  e-closure-aux(ss, [], _) --> ss.
+  
+  e-closure-aux(ss, [t | ts], nfa) --> e-closure-aux(ss', ts', nfa)
+  where
+    nfa-move(I(t, ""), nfa) --> us;
+    e-closure-help(ss, ts, us) --> SP(ss', ts').
+  
+  e-closure-help(ss, ts, []) --> SP(ss, ts).
+  
+  e-closure-help(ss, ts, [u|us]) --> sp
+  where
+    is-in-states(u, ss) --> is-in;
+    case is-in of {
+      true =>
+        e-closure-help(ss, ts, us) --> sp
+      false =>
+        e-closure-help([u|ss],[u|ts], us) --> sp
+    }.
+
+  is-in-states(s, []) --> false.
+  
+  is-in-states(s1, [s2 | _]) --> true
+  where
+    s1 == s2.
+  
+  is-in-states(s1, [s2 | ss]) --> is-in-states(s1, ss)
+  where
+    s1 != s2.
+
+  nfa-move(in@I(s, ""), nfa) --> [s | ss]
+  where
+    nfa-move-aux(in, nfa) --> ss.
+  
+  nfa-move(in@I(_, t), nfa) --> nfa-move-aux(in, nfa)
+  where
+    t != "".
+  
+  nfa-move-aux(in, NFA(_, _, _, table)) --> ss
+  where
+    case table[in?] of {
+      true =>
+        table[in] => ss
+      otherwise =>
+        [] => ss
+    }.
+  
+  nfa-start(NFA(_, s, _, _)) --> s.
+  
+  nfa-final(NFA(_, _, f, _)) --> f.
+  
+signature
+  constructors
+    nfa-run : List(String) * NFA --> Bool
+    nfa-run-aux : List(String) * List(State) * NFA --> Bool
+    
+    nfa-moves : List(State) * String * NFA --> List(State)  
+    
+rules
+  
+  nfa-run(strs, nfa) --> nfa-run-aux(strs, e-closure([nfa-start(nfa)], nfa), nfa).
+    
+  nfa-run-aux([], ss, nfa) --> is-in-states(nfa-final(nfa), ss).
+
+  nfa-run-aux([c|cs], ss, nfa) --> nfa-run-aux(cs, ss', nfa)
+  where
+    e-closure(nfa-moves(ss, c, nfa), nfa) --> ss'.
+
+//  nfa-moves([], _, nfa) --> [].
+//  
+//  nfa-moves([
+  
+  

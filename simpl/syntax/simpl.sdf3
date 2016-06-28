@@ -42,6 +42,20 @@ context-free syntax
       
   Exp.Block = <{ <{Exp ";"}*> }>
 
+context-free syntax
+  
+  Exp.String = <<STRING>>
+  Exp.Match = <<Exp> ? [<Regex>]>
+  
+  Regex.Epsilon = EPSI
+  Regex.Char = <<CHAR>>
+  
+  Regex.Seq  = <<Regex><Regex>> {left}
+  
+  Regex.Group = <(<Regex>)>
+  Regex.Alt  = <(<Regex> | <Regex>)>
+  Regex.Kleene = <<Regex>*>
+
 context-free priorities
 
   Exp.Block
@@ -61,6 +75,8 @@ context-free priorities
   {non-assoc:
     Exp.Let
   }
+  > Regex.Kleene > Regex.Seq
+  // > Regex.Group > Regex.Alt > Regex.Seq
   
 
 
