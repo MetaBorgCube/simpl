@@ -7,7 +7,7 @@ signature
   sort aliases
     Heap = Map(Int, V)
   
-  variables
+  semantic components
     H : Heap
   
   constructors
@@ -24,4 +24,4 @@ rules
     fresh => addr;
     write(addr, v) --> _.
   
-  write(addr, v) :: H --> v :: Heap {addr |--> v, H}.
+  write(addr, v) :: H --> v :: H {addr |--> v, H}.

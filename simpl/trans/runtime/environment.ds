@@ -7,9 +7,9 @@ signature
   sort aliases
     Env = Map(String, V)
   
-  variables
+  semantic components
     E : Env
-    
+  
   constructors
     bindVar: String * V --> Env
     readVar: String --> V 
@@ -19,4 +19,3 @@ rules
   E |- bindVar(x, v) --> {x |--> v, E}.
   
   E |- readVar(x) --> E[x].
-  
