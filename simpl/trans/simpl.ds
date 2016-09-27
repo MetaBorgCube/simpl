@@ -9,10 +9,10 @@ signature
     NumV: Int -> V
     StringV: String -> V
     RegexV: NFA -> V
-    lookup: Map(String, Int) --> V 
-    
+  
   arrows
-    E |- Exp :: H --> V :: H
+    E |- lookup(Map(String, Int)) :: H --> V :: H
+    Exp -default-> V
     List(Exp) --> V
      
   native operators

@@ -10,10 +10,10 @@ signature
   semantic components
     H : Heap
   
-  constructors
-    read: Int --> V
-    allocate: V --> Int
-    write: Int * V --> V
+  arrows
+    read(Int) --> V
+    allocate(V) --> Int
+    write(Int, V) --> V
 
 rules
 

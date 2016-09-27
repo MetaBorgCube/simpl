@@ -10,9 +10,9 @@ signature
   semantic components
     E : Env
   
-  constructors
-    bindVar: String * V --> Env
-    readVar: String --> V 
+  arrows
+    bindVar(String, V) --> Env
+    readVar(String) --> V 
     
 rules
   

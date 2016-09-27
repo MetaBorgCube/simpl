@@ -17,33 +17,27 @@ signature
   sorts StatesPair
   constructors SP: List(State) * List(State) -> StatesPair
   
-  constructors // NFA basic projection and operation
-    nfa-table : NFA --> TransTable
-    nfa-states: NFA --> List(State)
-    nfa-start : NFA --> State
-    nfa-final : NFA --> State
+  arrows // NFA basic projection and operation
+    nfa-table(NFA) --> TransTable
+    nfa-states(NFA) --> List(State)
+    nfa-start(NFA) --> State
+    nfa-final(NFA) --> State
 
-//    nfa-new : State * State --> NFA
-//    nfa-add-state : NFA * State --> NFA
-//    nfa-add-move : NFA * State * String * List(State) --> NFA
+    nfa-move(NFA, TransInput) --> List(State)
+    nfa-move-aux(NFA, TransInput) --> List(State)
+    nfa-moves(NFA, List(State), String) --> List(State)  
     
-    nfa-move    : NFA * TransInput --> List(State)
-    nfa-move-aux: NFA * TransInput --> List(State)
-    nfa-moves   : NFA * List(State) * String --> List(State)  
-    
-    is-in-states: State * List(State) --> Bool
+    is-in-states(State, List(State)) --> Bool
   
-  constructors // NFA simulation
+  arrows // NFA simulation
 
-    epsi-closure: NFA * List(State) --> List(State)
-    epsi-closure-aux: NFA * List(State) * List(State) --> List(State)
-    epsi-closure-help: List(State) * List(State) * List(State) --> StatesPair
+    epsi-closure(NFA, List(State)) --> List(State)
+    epsi-closure-aux(NFA, List(State), List(State)) --> List(State)
+    epsi-closure-help(List(State), List(State), List(State)) --> StatesPair
 
-    nfa-simulate : NFA * List(String) --> Bool
-    nfa-simulate-aux : NFA * List(String) * List(State) --> Bool
+    nfa-simulate(NFA, List(String)) --> Bool
+    nfa-simulate-aux(NFA, List(String), List(State)) --> Bool
     
-
-
 rules // NFA projections
 
   nfa-start(NFA(_, s, _, _)) --> s.
