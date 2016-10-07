@@ -7,7 +7,7 @@ signature
   sort aliases
     Env = Map(String, V)
   
-  semantic components
+  components
     E : Env
   
   arrows

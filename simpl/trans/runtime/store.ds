@@ -7,7 +7,7 @@ signature
   sort aliases
     Heap = Map(Int, V)
   
-  semantic components
+  components
     H : Heap
   
   arrows

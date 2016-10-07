@@ -11,7 +11,6 @@ signature
     RegexV: NFA -> V
   
   arrows
-    E |- lookup(Map(String, Int)) :: H --> V :: H
     Exp -default-> V
     List(Exp) --> V
      
@@ -26,7 +25,7 @@ signature
   
   sort aliases
     SS = List(String)
-    
+  
 signature
   arrows 
     Prog -init-> V
@@ -74,7 +73,7 @@ signature
 rules
   E |- Fun(x, e) --> ClosV(x, e, E).
   
-  App(ClosV(x, e, E), v1) --> v2
+  E1 |- App(ClosV(x, e, E), v1) --> v2
   where
     E  |- bindVar(x, v1) --> E';
     E' |- e --> v2.
