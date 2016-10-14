@@ -7,13 +7,13 @@ signature
   sort aliases
     Heap = Map(Int, V)
   
-  variables
+  components
     H : Heap
   
-  constructors
-    read: Int --> V
-    allocate: V --> Int
-    write: Int * V --> V
+  arrows
+    read(Int) --> V
+    allocate(V) --> Int
+    write(Int, V) --> V
 
 rules
 
@@ -24,4 +24,4 @@ rules
     fresh => addr;
     write(addr, v) --> _.
   
-  write(addr, v) :: H --> v :: Heap {addr |--> v, H}.
+  write(addr, v) :: H --> v :: H {addr |--> v, H}.

@@ -1,4 +1,6 @@
 let
   iszero = a -> ifz(a) then 1 else 0
-in
-  iszero(42)
+in {
+  42 
+  ;iszero(42)
+}

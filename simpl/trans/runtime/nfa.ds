@@ -1,0 +1,121 @@
+module trans/runtime/nfa
+
+signature
+  sorts
+    NFA
+    TransInput
+    
+  sort aliases
+    State = Int // just an ID
+    TransTable = Map(TransInput, List(Int)) // transition table
+    
+  constructors
+    // states * start state * accepting state * transition table
+    NFA : List(State) * State * State * TransTable -> NFA
+    I : State * String -> TransInput
+  
+  sorts StatesPair
+  constructors SP: List(State) * List(State) -> StatesPair
+  
+  arrows // NFA basic projection and operation
+    nfa-table(NFA) --> TransTable
+    nfa-states(NFA) --> List(State)
+    nfa-start(NFA) --> State
+    nfa-final(NFA) --> State
+
+    nfa-move(NFA, TransInput) --> List(State)
+    nfa-move-aux(NFA, TransInput) --> List(State)
+    nfa-moves(NFA, List(State), String) --> List(State)  
+    
+    is-in-states(State, List(State)) --> Bool
+  
+  arrows // NFA simulation
+
+    epsi-closure(NFA, List(State)) --> List(State)
+    epsi-closure-aux(NFA, List(State), List(State)) --> List(State)
+    epsi-closure-help(List(State), List(State), List(State)) --> StatesPair
+
+    nfa-simulate(NFA, List(String)) --> Bool
+    nfa-simulate-aux(NFA, List(String), List(State)) --> Bool
+    
+rules // NFA projections
+
+  nfa-start(NFA(_, s, _, _)) --> s.
+  
+  nfa-final(NFA(_, _, f, _)) --> f.
+  
+  nfa-table(NFA(_, _, _, tbl)) --> tbl.
+  
+  nfa-states(NFA(ss, _, _, _)) --> ss.
+  
+  is-in-states(_, []) --> false.
+  
+  is-in-states(s1, [s2 | _]) --> true where s1 == s2.
+  
+  is-in-states(s1, [s2 | ss]) --> is-in-states(s1, ss) where s1 != s2.
+
+rules // NFA moves
+
+  nfa-move(nfa, in) --> ss'
+  where
+    nfa-move-aux(nfa,in) --> ss;
+    case in of {
+      I(s,"") =>
+        [s | ss] => ss'
+      otherwise =>
+        ss => ss'
+    }.
+
+  nfa-move-aux(nfa, in) --> ss
+  where
+    nfa-table(nfa) --> tbl;
+    case tbl[in?] of {
+      true =>
+        tbl[in] => ss
+      otherwise =>
+        [] => ss
+    }.
+
+  nfa-moves(_, [], _) --> [].
+  
+  nfa-moves(nfa, [s|ss], c) --> concat(ss1, ss2)
+  where
+    nfa-move(nfa, I(s, c)) --> ss1;
+    nfa-moves(nfa, ss, c) --> ss2.
+
+rules // NFA simulation
+
+  epsi-closure(nfa, ss) --> epsi-closure-aux(nfa, ss, ss).
+
+  epsi-closure-aux(_, ss, []) --> ss.
+  
+  epsi-closure-aux(nfa, ss, [t | ts]) --> epsi-closure-aux(nfa, ss', ts')
+  where
+    nfa-move(nfa, I(t, "")) --> us;
+    epsi-closure-help(ss, ts, us) --> SP(ss', ts').
+  
+  epsi-closure-help(ss, ts, []) --> SP(ss, ts).
+  
+  epsi-closure-help(ss, ts, [u|us]) --> sp
+  where
+    is-in-states(u, ss) --> is-in;
+    case is-in of {
+      true =>
+        epsi-closure-help(ss, ts, us) --> sp
+      false =>
+        epsi-closure-help([u|ss],[u|ts], us) --> sp
+    }.
+  
+  nfa-simulate(nfa, strs) --> nfa-simulate-aux(nfa, strs, epsi-closure(nfa, [nfa-start(nfa)])).
+    
+  nfa-simulate-aux(nfa, [], ss) --> is-in-states(nfa-final(nfa), ss).
+
+  nfa-simulate-aux(nfa, [c|cs], ss) --> nfa-simulate-aux(nfa, cs, ss')
+  where
+    epsi-closure(nfa, nfa-moves(nfa, ss, c)) --> ss'.
+
+// utilities
+signature
+  native operators
+    concat : List(State) * List(State) -> List(State)
+  

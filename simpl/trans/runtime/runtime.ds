@@ -4,3 +4,4 @@ imports
   trans/runtime/values
   trans/runtime/environment
   trans/runtime/store
+  trans/runtime/nfa

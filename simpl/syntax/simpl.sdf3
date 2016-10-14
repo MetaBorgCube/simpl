@@ -38,8 +38,30 @@ context-free syntax
 context-free syntax
   Exp.Ifz = <ifz <Exp> then <Exp> else <Exp>>
 
+context-free syntax
+      
+  Exp.Block = <{ <{Exp ";"}*> }>
+
+context-free syntax
+  
+  Exp.String = <<STRING>>
+  Exp.Match = <<Exp> ? <Exp>>
+  
+  Exp.ExpRegex = <[<Regex>]>
+  
+  Regex.Epsilon = EPSI
+  Regex.Char = <<CHAR>>
+  
+  Regex.Seq  = <<Regex><Regex>> {left}
+  
+  Regex.Group = <(<Regex>)>
+  Regex.Alt  = <(<Regex> | <Regex>)>
+  Regex.Kleene = <<Regex>*>
+
 context-free priorities
 
+  Exp.Block
+  >
   {left:
     Exp.App
   } >
@@ -55,6 +77,7 @@ context-free priorities
   {non-assoc:
     Exp.Let
   }
+  > Regex.Kleene > Regex.Seq
   
 
 

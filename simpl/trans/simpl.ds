@@ -7,25 +7,34 @@ imports
 signature
   constructors
     NumV: Int -> V
-
+    StringV: String -> V
+    RegexV: NFA -> V
+  
   arrows
-    Exp --> V
-
+    Exp -default-> V
+    List(Exp) --> V
+     
   native operators
     parseI: String -> Int
     addI: Int * Int -> Int
     subI: Int * Int -> Int
     mulI: Int * Int -> Int
-
+    concatS: String * String -> String
+    unquoteS: String -> String
+    explodeS: String -> List(String)
+  
+  sort aliases
+    SS = List(String)
+  
 signature
   arrows 
     Prog -init-> V
-
+  
 rules
   
   Program(e) -init-> v
   where
-    Env {} |- e :: Heap {} --> v :: Heap _.
+    E {} |- e :: H {} --> v :: H _.
     
 rules
   
@@ -39,9 +48,10 @@ rules
 
 
 rules
+
   Let(x, v1, e2) --> v2
   where
-    Env bindVar(x, v1) |- e2 --> v2.
+    E bindVar(x, v1) |- e2 --> v2.
   
   Var(x) --> readVar(x).
 
@@ -63,7 +73,7 @@ signature
 rules
   E |- Fun(x, e) --> ClosV(x, e, E).
   
-  App(ClosV(x, e, E), v1) --> v2
+  E1 |- App(ClosV(x, e, E), v1) --> v2
   where
     E  |- bindVar(x, v1) --> E';
     E' |- e --> v2.
@@ -79,4 +89,88 @@ rules
         e2 --> v
     }.
 
+rules
+  
+  Block(es) --> v
+  where
+    es --> v.
+  
+  es : List(Exp) --> v
+  where
+    case es of {
+      [e] =>
+        e --> v
+      [e|es'] =>
+        e --> _;
+        es' --> v
+    }.
 
+rules
+  
+  ExpRegex(regex) --> RegexV(regex).
+  
+  String(s) --> StringV(unquoteS(s)).
+  
+  Plus(StringV(s1), StringV(s2)) --> StringV(concatS(s1, s2)).
+  
+  Match(v@StringV(s), RegexV(nfa)) --> v 
+  where
+    nfa-simulate(nfa, explodeS(s)) --> true.
+
+/*
+* ============
+* REGEX to NFA
+* ============
+*/
+
+signature
+  arrows
+    Regex --> NFA
+
+rules
+
+  Epsilon(_) --> NFA([i, f], i, f, { I(i,"") |--> [f] })
+  where
+    fresh => i;
+    fresh => f.
+
+  Char(c) --> NFA([i, f], i, f, { I(i, c) |--> [f] })
+  where
+    fresh => i;
+    fresh => f.
+
+  Alt(r1, r2) --> NFA([i, f | ss], i, f, { I(i,"") |--> [i1, i2],
+                                           I(f1,"") |--> [f],
+                                           I(f2,"") |--> [f],
+                                           t1, t2
+                                         })
+  where
+    fresh => i;
+    fresh => f;
+    r1 --> NFA(ss1, i1, f1, t1);
+    r2 --> NFA(ss2, i2, f2, t2);
+    concat(ss1, ss2) => ss.
+
+  Seq(r1, r2) --> NFA(ss, i1, f2, { I(f1, "") |--> [i2],  
+                                    t1, t2
+                                  })
+  where
+    r1 --> NFA(ss1, i1, f1, t1);
+    r2 --> NFA(ss2, i2, f2, t2);
+    concat(ss1, ss2) => ss.
+
+  Kleene(r) --> NFA([i, f | ss1], i, f, { I(i,"") |--> [i1, f],
+                                          I(f1,"") |--> [i1, f],
+                                          t1
+                                        })
+  where
+    fresh => i;
+    fresh => f;
+    r --> NFA(ss1, i1, f1, t1).
+
+  Group(r) --> r.
+  
+
+  
+  
+  
