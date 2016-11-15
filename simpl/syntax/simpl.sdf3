@@ -30,6 +30,10 @@ context-free syntax
   Exp.Unbox = <unbox(<Exp>)>
   Exp.Setbox = <setbox(<Exp>, <Exp>)>
 
+  ID = <box> {reject}
+  ID = <unbox> {reject}
+  ID = <setbox> {reject}
+  
 context-free syntax
 
   Exp.Fun = [[ID] -> [Exp]]

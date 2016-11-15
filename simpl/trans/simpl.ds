@@ -73,16 +73,20 @@ signature
 rules
   E |- Fun(x, e) --> ClosV(x, e, E).
   
-  E1 |- App(ClosV(x, e, E), v1) --> v2
+  App(ClosV(x, e, E), v1) --> v2
   where
     E  |- bindVar(x, v1) --> E';
     E' |- e --> v2.
 
+signature
+  constructors
+    IfzV : Int * Exp * Exp -> Exp
+
 rules
-  
-  Ifz(NumV(ci), e1, e2) --> v
+
+  Ifz(NumV(i), e1, e2) --> v
   where
-    case ci of {
+    case i of {
       0 =>
         e1 --> v
       otherwise =>
@@ -95,16 +99,12 @@ rules
   where
     es --> v.
   
-  es : List(Exp) --> v
+  [e] : List(Exp) --> e.
+  
+  [e|es] : List(Exp) --> es
   where
-    case es of {
-      [e] =>
-        e --> v
-      [e|es'] =>
-        e --> _;
-        es' --> v
-    }.
-
+    e --> _.
+  
 rules
   
   ExpRegex(regex) --> RegexV(regex).
