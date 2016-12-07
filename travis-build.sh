@@ -3,4 +3,4 @@ set -ev
 cd $TRAVIS_BUILD_DIR/simpl
 mvn -Pstandalone install
 cd $TRAVIS_BUILD_DIR/simpl.interpreter
-mvn -Pstandalone test
+mvn test
