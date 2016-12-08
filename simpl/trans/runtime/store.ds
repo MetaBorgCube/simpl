@@ -2,26 +2,35 @@ module trans/runtime/store
 
 imports
   trans/runtime/values
-
+  
 signature
-  sort aliases
-    Heap = Map(Int, V)
-  
-  components
-    H : Heap
-  
+  sorts
+    Address
+
   arrows
-    read(Int) --> V
-    allocate(V) --> Int
-    write(Int, V) --> V
+    read(Address) --> V
+    allocate(V) --> Address 
+    write(Address, V) --> V
 
-rules
-
-  read(addr) :: H --> H[addr].
-
-  allocate(v) --> addr
-  where
-    fresh => addr;
-    write(addr, v) --> _.
-  
-  write(addr, v) :: H --> v :: H {addr |--> v, H}.
+//signature
+//  sort aliases
+//    Heap = Map(Int, V)
+//  
+//  components
+//    H : Heap
+//  
+//  arrows
+//    read(Int) --> V
+//    allocate(V) --> Int
+//    write(Int, V) --> V
+//
+//rules
+//
+//  read(addr) :: H --> H[addr].
+//
+//  allocate(v) --> addr
+//  where
+//    fresh => addr;
+//    write(addr, v) --> _.
+//  
+//  write(addr, v) :: H --> v :: H {addr |--> v, H}.

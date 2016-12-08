@@ -1,0 +1,24 @@
+module trans/runtime/map-store
+
+imports
+  trans/runtime/values
+  trans/runtime/store
+
+signature
+  sort aliases
+    Address = Int
+    Heap = Map(Address, V)
+  
+  components
+    H : Heap
+
+rules
+
+  read(addr) :: H --> H[addr].
+
+  allocate(v) --> addr
+  where
+    fresh => addr;
+    write(addr, v) --> _.
+  
+  write(addr, v) :: H --> v :: H {addr |--> v, H}.
