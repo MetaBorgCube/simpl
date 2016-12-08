@@ -3,6 +3,7 @@ module trans/simpl
 imports
   src-gen/ds-signatures/simpl-sig
   trans/runtime/runtime
+  trans/runtime/map-store
   
 signature
   constructors
