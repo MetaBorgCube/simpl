@@ -24,9 +24,6 @@ signature
     unquoteS: String -> String
     explodeS: String -> List(String)
   
-  sort aliases
-    SS = List(String)
-  
 signature
   arrows 
     Prog -init-> V
