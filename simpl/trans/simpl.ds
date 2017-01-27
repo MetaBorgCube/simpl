@@ -12,7 +12,7 @@ signature
     RegexV: NFA -> V
   
   arrows
-    Exp -default-> V
+    Exp --> V
     List(Exp) --> V
      
   native operators
