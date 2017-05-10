@@ -23,7 +23,8 @@ signature
     concatS: String * String -> String
     unquoteS: String -> String
     explodeS: String -> List(String)
-  
+    printV: V -> V
+    
 signature
   arrows 
     Prog -init-> V
@@ -32,53 +33,54 @@ rules
   
   Program(e) -init-> v
   where
-    E {} |- e :: H {} --> v :: H _.
+    E {} |- e :: H {} --> v :: H _
     
 rules
   
-  Lit(s) --> NumV(parseI(s)).
+  Lit(s) --> NumV(parseI(s))
   
-  Plus(NumV(i1), NumV(i2)) --> NumV(addI(i1, i2)).
+  Plus(NumV(i1), NumV(i2)) --> NumV(addI(i1, i2))
   
-  Minus(NumV(i1), NumV(i2)) --> NumV(subI(i1, i2)).
+  Minus(NumV(i1), NumV(i2)) --> NumV(subI(i1, i2))
   
-  Times(NumV(i1), NumV(i2)) --> NumV(mulI(i1, i2)).
+  Times(NumV(i1), NumV(i2)) --> NumV(mulI(i1, i2))
 
 
 rules
 
   Let(x, v1, e2) --> v2
   where
-    E bindVar(x, v1) |- e2 --> v2.
+    E bindVar(x, v1) |- e2 --> v2
   
-  Var(x) --> readVar(x).
+  Var(x) --> readVar(x)
 
 signature
   constructors
     BoxV: Int -> V
 
 rules
-  Box(v) --> BoxV(allocate(v)).
+
+  Box(v) --> BoxV(allocate(v))
   
-  Unbox(BoxV(addr)) --> read(addr).
+  Unbox(BoxV(addr)) --> read(addr)
   
-  Setbox(BoxV(addr), v) --> write(addr,v).
+  Setbox(BoxV(addr), v) --> write(addr,v)
 
 signature
   constructors
     ClosV: String * Exp * Env -> V
 
 rules
-  E |- Fun(x, e) --> ClosV(x, e, E).
+  E |- Fun(x, e) --> ClosV(x, e, E)
   
   App(ClosV(x, e, E), v1) --> v2
   where
     E  |- bindVar(x, v1) --> E';
-    E' |- e --> v2.
+    E' |- e --> v2
 
-signature
-  constructors
-    IfzV : Int * Exp * Exp -> Exp
+rules
+  
+  Print(e) --> printV(e)
 
 rules
 
@@ -89,31 +91,31 @@ rules
         e1 --> v
       otherwise =>
         e2 --> v
-    }.
+    }
 
 rules
   
   Block(es) --> v
   where
-    es --> v.
+    es --> v
   
-  [e] : List(Exp) --> e.
+  [e] : List(Exp) --> e
   
   [e|es] : List(Exp) --> es
   where
-    e --> _.
+    e --> _
   
 rules
   
-  ExpRegex(regex) --> RegexV(regex).
+  ExpRegex(regex) --> RegexV(regex)
   
-  String(s) --> StringV(unquoteS(s)).
+  String(s) --> StringV(unquoteS(s))
   
-  Plus(StringV(s1), StringV(s2)) --> StringV(concatS(s1, s2)).
+  Plus(StringV(s1), StringV(s2)) --> StringV(concatS(s1, s2))
   
   Match(v@StringV(s), RegexV(nfa)) --> v 
   where
-    nfa-simulate(nfa, explodeS(s)) --> true.
+    nfa-simulate(nfa, explodeS(s)) --> true
 
 /*
 * ============
@@ -130,12 +132,12 @@ rules
   Epsilon(_) --> NFA([i, f], i, f, { I(i,"") |--> [f] })
   where
     fresh => i;
-    fresh => f.
+    fresh => f
 
   Char(c) --> NFA([i, f], i, f, { I(i, c) |--> [f] })
   where
     fresh => i;
-    fresh => f.
+    fresh => f
 
   Alt(r1, r2) --> NFA([i, f | ss], i, f, { I(i,"") |--> [i1, i2],
                                            I(f1,"") |--> [f],
@@ -147,7 +149,7 @@ rules
     fresh => f;
     r1 --> NFA(ss1, i1, f1, t1);
     r2 --> NFA(ss2, i2, f2, t2);
-    concat(ss1, ss2) => ss.
+    concat(ss1, ss2) => ss
 
   Seq(r1, r2) --> NFA(ss, i1, f2, { I(f1, "") |--> [i2],  
                                     t1, t2
@@ -155,7 +157,7 @@ rules
   where
     r1 --> NFA(ss1, i1, f1, t1);
     r2 --> NFA(ss2, i2, f2, t2);
-    concat(ss1, ss2) => ss.
+    concat(ss1, ss2) => ss
 
   Kleene(r) --> NFA([i, f | ss1], i, f, { I(i,"") |--> [i1, f],
                                           I(f1,"") |--> [i1, f],
@@ -164,9 +166,9 @@ rules
   where
     fresh => i;
     fresh => f;
-    r --> NFA(ss1, i1, f1, t1).
+    r --> NFA(ss1, i1, f1, t1)
 
-  Group(r) --> r.
+  Group(r) --> r
   
 
   

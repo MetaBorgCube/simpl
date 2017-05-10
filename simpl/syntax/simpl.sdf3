@@ -29,10 +29,12 @@ context-free syntax
   Exp.Box = <box(<Exp>)>
   Exp.Unbox = <unbox(<Exp>)>
   Exp.Setbox = <setbox(<Exp>, <Exp>)>
-
+  Exp.Print = <print(<Exp>)>
+  
   ID = <box> {reject}
   ID = <unbox> {reject}
   ID = <setbox> {reject}
+  ID = <print> {reject}
   
 context-free syntax
 
@@ -61,6 +63,12 @@ context-free syntax
   Regex.Group = <(<Regex>)>
   Regex.Alt  = <(<Regex> | <Regex>)>
   Regex.Kleene = <<Regex>*>
+
+context-free syntax
+
+  Exp.Throw = <throw(<Exp>)>
+  
+  Exp.TryCatch = <try(<Exp>)catch(<Exp>)>
 
 context-free priorities
 

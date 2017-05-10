@@ -40,19 +40,19 @@ signature
     
 rules // NFA projections
 
-  nfa-start(NFA(_, s, _, _)) --> s.
+  nfa-start(NFA(_, s, _, _)) --> s
   
-  nfa-final(NFA(_, _, f, _)) --> f.
+  nfa-final(NFA(_, _, f, _)) --> f
   
-  nfa-table(NFA(_, _, _, tbl)) --> tbl.
+  nfa-table(NFA(_, _, _, tbl)) --> tbl
   
-  nfa-states(NFA(ss, _, _, _)) --> ss.
+  nfa-states(NFA(ss, _, _, _)) --> ss
   
-  is-in-states(_, []) --> false.
+  is-in-states(_, []) --> false
   
-  is-in-states(s1, [s2 | _]) --> true where s1 == s2.
-  
-  is-in-states(s1, [s2 | ss]) --> is-in-states(s1, ss) where s1 != s2.
+  is-in-states(s1, [s2 | _]) --> true where s1 == s2
+ 
+  is-in-states(s1, [s2 | ss]) --> is-in-states(s1, ss) where s1 != s2
 
 rules // NFA moves
 
@@ -64,7 +64,7 @@ rules // NFA moves
         [s | ss] => ss'
       otherwise =>
         ss => ss'
-    }.
+    }
 
   nfa-move-aux(nfa, in) --> ss
   where
@@ -74,27 +74,27 @@ rules // NFA moves
         tbl[in] => ss
       otherwise =>
         [] => ss
-    }.
+    }
 
-  nfa-moves(_, [], _) --> [].
+  nfa-moves(_, [], _) --> []
   
   nfa-moves(nfa, [s|ss], c) --> concat(ss1, ss2)
   where
     nfa-move(nfa, I(s, c)) --> ss1;
-    nfa-moves(nfa, ss, c) --> ss2.
+    nfa-moves(nfa, ss, c) --> ss2
 
 rules // NFA simulation
 
-  epsi-closure(nfa, ss) --> epsi-closure-aux(nfa, ss, ss).
-
-  epsi-closure-aux(_, ss, []) --> ss.
+  epsi-closure(nfa, ss) --> epsi-closure-aux(nfa, ss, ss)
+  
+  epsi-closure-aux(_, ss, []) --> ss
   
   epsi-closure-aux(nfa, ss, [t | ts]) --> epsi-closure-aux(nfa, ss', ts')
   where
     nfa-move(nfa, I(t, "")) --> us;
-    epsi-closure-help(ss, ts, us) --> SP(ss', ts').
+    epsi-closure-help(ss, ts, us) --> SP(ss', ts')
   
-  epsi-closure-help(ss, ts, []) --> SP(ss, ts).
+  epsi-closure-help(ss, ts, []) --> SP(ss, ts)
   
   epsi-closure-help(ss, ts, [u|us]) --> sp
   where
@@ -104,15 +104,15 @@ rules // NFA simulation
         epsi-closure-help(ss, ts, us) --> sp
       false =>
         epsi-closure-help([u|ss],[u|ts], us) --> sp
-    }.
+    }
   
-  nfa-simulate(nfa, strs) --> nfa-simulate-aux(nfa, strs, epsi-closure(nfa, [nfa-start(nfa)])).
+  nfa-simulate(nfa, strs) --> nfa-simulate-aux(nfa, strs, epsi-closure(nfa, [nfa-start(nfa)]))
     
-  nfa-simulate-aux(nfa, [], ss) --> is-in-states(nfa-final(nfa), ss).
+  nfa-simulate-aux(nfa, [], ss) --> is-in-states(nfa-final(nfa), ss)
 
   nfa-simulate-aux(nfa, [c|cs], ss) --> nfa-simulate-aux(nfa, cs, ss')
   where
-    epsi-closure(nfa, nfa-moves(nfa, ss, c)) --> ss'.
+    epsi-closure(nfa, nfa-moves(nfa, ss, c)) --> ss'
 
 // utilities
 signature

@@ -14,11 +14,11 @@ signature
 
 rules
 
-  read(addr) :: H --> H[addr].
+  read(addr) :: H --> H[addr]
 
   allocate(v) --> addr
   where
     fresh => addr;
-    write(addr, v) --> _.
+    write(addr, v) --> _
   
-  write(addr, v) :: H --> v :: H {addr |--> v, H}.
+  write(addr, v) :: H --> v :: H {addr |--> v, H}

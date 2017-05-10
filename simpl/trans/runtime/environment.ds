@@ -15,7 +15,7 @@ signature
     readVar(String) --> V 
     
 rules
+ 
+  E |- bindVar(x, v) --> {x |--> v, E}
   
-  E |- bindVar(x, v) --> {x |--> v, E}.
-  
-  E |- readVar(x) --> E[x].
+  E |- readVar(x) --> E[x]
