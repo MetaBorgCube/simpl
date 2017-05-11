@@ -78,7 +78,7 @@
 				<extensions>true</extensions>
 				<executions>
 					<execution>
-						<phase>verify</phase>
+						<phase>test</phase>
 						<goals>
 							<goal>transform</goal>
 						</goals>
@@ -86,7 +86,7 @@
 				</executions>
 				<configuration>
 					<language>ds</language>
-					<goal>Generate Interpreter</goal>
+					<goal>Generate interpreter</goal>
 					<fileSets>
 						<fileSet>
 							<directory>${basedir}/trans</directory>
@@ -95,6 +95,8 @@
 							</includes>
 						</fileSet>
 					</fileSets>
+					<!-- <pardonedLanguages combine.children="append"> <pardonedLanguage>ds</pardonedLanguage> 
+						</pardonedLanguages> -->
 				</configuration>
 			</plugin>
 		</plugins>
