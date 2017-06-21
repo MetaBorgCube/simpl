@@ -6,13 +6,22 @@ dependencies:
   compile:
   - org.metaborg:org.metaborg.meta.lang.esv:${metaborgVersion}
   - org.metaborg:org.metaborg.meta.lang.template:${metaborgVersion}
+  - org.metaborg:dynsem:${metaborgVersion}
   source:
   - org.metaborg:meta.lib.spoofax:${metaborgVersion}
-  - org.metaborg:org.metaborg.meta.lib.analysis:${metaborgVersion}
 pardonedLanguages:
 - EditorService
 - Stratego-Sugar
 - SDF
+debug:
+  typesmart: false
+language:
+  sdf:
+    pretty-print: testing
+    # If set to java, set the table in editor/Syntax.esv to target/metaborg/sdf-new.tbl
+    sdf2table: c
+    placeholder:
+      prefix: "$"
 language:
   stratego:
     format: ctree

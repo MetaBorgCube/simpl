@@ -9,7 +9,8 @@ imports
 rules // Debugging
   
   debug-show-aterm:
-    (node, _, _, path, project-path) -> (filename, result)
+    (selected, position, ast, path, project-path) -> (filename, result)
     with
-      filename := <guarantee-extension(|"aterm")> path
-    ; result   := node
+      filename := <guarantee-extension(|"aterm")> path;
+      result   := selected
+  
