@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.InputStream;
 
 import org.apache.commons.io.FilenameUtils;
-import org.metaborg.dynsem.metainterpreter.generated.terms.ITTerm;
 import org.metaborg.meta.lang.dynsem.interpreter.DynSemLanguageParser;
 import org.metaborg.meta.lang.dynsem.interpreter.IDynSemLanguageParser;
+import org.metaborg.meta.lang.dynsem.interpreter.terms.ITerm;
 import org.spoofax.interpreter.terms.IStrategoTerm;
 import org.spoofax.terms.TermFactory;
 import org.spoofax.terms.io.TAFTermReader;
@@ -17,7 +17,7 @@ import dynsem.metainterpreter.natives.DynSemCustomMain;
 
 public class simplCustomMain {
 
-	public final static String SPEC_FILE = "src/main/resources/simpl.core.nosug.aterm";
+	public final static String SPEC_FILE = "src/main/resources/simpl.typedcore.aterm";
 	public final static String PARSE_TABLE = "src/main/resources/parsetable.tbl";
 	public final static String START_SYMBOL = "Prog";
 	public final static String MIME_TYPE = "application/x-simpl";
@@ -29,7 +29,7 @@ public class simplCustomMain {
 
 		TAFTermReader specReader = new TAFTermReader(new TermFactory());
 		IStrategoTerm specTerm = specReader.parseFromStream(getSpecificationTerm());
-		ITTerm result = DynSemCustomMain.evaluate(programTerm, specTerm);
+		ITerm result = DynSemCustomMain.evaluate(programTerm, specTerm);
 		System.out.println(result);
 	}
 
