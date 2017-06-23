@@ -78,7 +78,7 @@ rules // NFA moves
 
   nfa-moves(_, [], _) --> []
   
-  nfa-moves(nfa, [s|ss], c) --> concat(ss1, ss2)
+  nfa-moves(nfa, [s|ss], c) --> ss1 ++ ss2
   where
     nfa-move(nfa, I(s, c)) --> ss1;
     nfa-moves(nfa, ss, c) --> ss2
@@ -114,8 +114,4 @@ rules // NFA simulation
   where
     epsi-closure(nfa, nfa-moves(nfa, ss, c)) --> ss'
 
-// utilities
-signature
-  native operators
-    concat : List(State) * List(State) -> List(State)
   

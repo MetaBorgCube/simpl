@@ -20,7 +20,6 @@ signature
     addI: Int * Int -> Int
     subI: Int * Int -> Int
     mulI: Int * Int -> Int
-    concatS: String * String -> String
     unquoteS: String -> String
     explodeS: String -> List(String)
     printV: V -> V
@@ -111,7 +110,7 @@ rules
   
   String(s) --> StringV(unquoteS(s))
   
-  Plus(StringV(s1), StringV(s2)) --> StringV(concatS(s1, s2))
+  Plus(StringV(s1), StringV(s2)) --> StringV(s1 ++ s2)
   
   Match(v@StringV(s), RegexV(nfa)) --> v 
   where
@@ -139,7 +138,7 @@ rules
     fresh => i;
     fresh => f
 
-  Alt(r1, r2) --> NFA([i, f | ss], i, f, { I(i,"") |--> [i1, i2],
+  Alt(r1, r2) --> NFA([i, f | ss1 ++ ss2], i, f, { I(i,"") |--> [i1, i2],
                                            I(f1,"") |--> [f],
                                            I(f2,"") |--> [f],
                                            t1, t2
@@ -148,16 +147,14 @@ rules
     fresh => i;
     fresh => f;
     r1 --> NFA(ss1, i1, f1, t1);
-    r2 --> NFA(ss2, i2, f2, t2);
-    concat(ss1, ss2) => ss
+    r2 --> NFA(ss2, i2, f2, t2)
 
-  Seq(r1, r2) --> NFA(ss, i1, f2, { I(f1, "") |--> [i2],  
+  Seq(r1, r2) --> NFA(ss1 ++ ss2, i1, f2, { I(f1, "") |--> [i2],  
                                     t1, t2
                                   })
   where
     r1 --> NFA(ss1, i1, f1, t1);
-    r2 --> NFA(ss2, i2, f2, t2);
-    concat(ss1, ss2) => ss
+    r2 --> NFA(ss2, i2, f2, t2)
 
   Kleene(r) --> NFA([i, f | ss1], i, f, { I(i,"") |--> [i1, f],
                                           I(f1,"") |--> [i1, f],
