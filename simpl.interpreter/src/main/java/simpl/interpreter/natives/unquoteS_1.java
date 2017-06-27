@@ -1,5 +1,6 @@
 package simpl.interpreter.natives;
 
+import org.metaborg.dynsem.metainterpreter.generated.terms.StrT_1_Term;
 import org.metaborg.meta.lang.dynsem.interpreter.nodes.building.TermBuild;
 
 import com.oracle.truffle.api.CompilerDirectives.TruffleBoundary;
@@ -15,8 +16,8 @@ public abstract class unquoteS_1 extends TermBuild {
 	}
 
 	@Specialization
-	public String doIt(String s) {
-		return unquote(s);
+	public StrT_1_Term doIt(StrT_1_Term sT) {
+		return new StrT_1_Term(unquote(sT.get_1()));
 	}
 
 	@TruffleBoundary

@@ -1,0 +1,15 @@
+module natives
+
+signature
+  native operators
+    logdebug: String -> String
+  
+  arrows
+    log(String) --> String
+
+rules
+
+  log(s) --> s
+  where
+    logdebug(s) => _
+  

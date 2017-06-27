@@ -4,6 +4,7 @@ imports
   src-gen/ds-signatures/simpl-sig
   trans/runtime/runtime
   trans/runtime/map-store
+  trans/natives
   
 signature
   constructors
@@ -100,7 +101,7 @@ rules
   
   [e] : List(Exp) --> e
   
-  [e|es] : List(Exp) --> es
+  [e|es@[_|_]] : List(Exp) --> es
   where
     e --> _
   
@@ -112,9 +113,15 @@ rules
   
   Plus(StringV(s1), StringV(s2)) --> StringV(s1 ++ s2)
   
-  Match(v@StringV(s), RegexV(nfa)) --> v 
+  Match(se, re) --> v 
   where
-    nfa-simulate(nfa, explodeS(s)) --> true
+    log("1") --> _;
+    se --> v@StringV(s);
+    log("2") --> _;
+    re --> RegexV(nfa);
+    log("3") --> _;
+    nfa-simulate(nfa, explodeS(s)) --> true;
+    log("4") --> _
 
 /*
 * ============

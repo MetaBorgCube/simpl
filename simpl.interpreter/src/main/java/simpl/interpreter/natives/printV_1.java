@@ -1,7 +1,7 @@
 package simpl.interpreter.natives;
 
+import org.metaborg.dynsem.metainterpreter.generated.terms.ITTerm;
 import org.metaborg.meta.lang.dynsem.interpreter.nodes.building.TermBuild;
-import org.metaborg.simpl.interpreter.generated.terms.IVTerm;
 
 import com.oracle.truffle.api.dsl.NodeChild;
 import com.oracle.truffle.api.dsl.Specialization;
@@ -15,7 +15,7 @@ public abstract class printV_1 extends TermBuild {
 	}
 
 	@Specialization
-	public IVTerm doInt(IVTerm v) {
+	public ITTerm doInt(ITTerm v) {
 		getContext().getOutput().println(v);
 		return v;
 	}
