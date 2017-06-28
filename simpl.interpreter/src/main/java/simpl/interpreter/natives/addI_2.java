@@ -1,5 +1,6 @@
 package simpl.interpreter.natives;
 
+import org.metaborg.dynsem.metainterpreter.generated.terms.IntT_1_Term;
 import org.metaborg.meta.lang.dynsem.interpreter.nodes.building.TermBuild;
 
 import com.oracle.truffle.api.dsl.NodeChild;
@@ -16,8 +17,8 @@ public abstract class addI_2 extends TermBuild {
 	}
 
 	@Specialization
-	public int doInt(int left, int right) {
-		return left + right;
+	public IntT_1_Term doInt(IntT_1_Term left, IntT_1_Term right) {
+		return new IntT_1_Term(left.get_1() + right.get_1());
 	}
 
 	public static TermBuild create(SourceSection source, TermBuild left,
